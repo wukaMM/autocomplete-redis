@@ -1,19 +1,7 @@
 #-*- coding:utf-8 -*-
 import redis
-
-try:
-  import simplejson
-except:
-  from django.utils import simplejson
-
-try:
-  from django.core import serializers
-  from django.db.models.loading import get_model
-except:
-  pass
-
-import mmseg
-from autocomplete.utils import queryset_iterator
+import simplejson
+import jieba
 
 class Autocomplete (object):
   """
@@ -27,7 +15,6 @@ class Autocomplete (object):
     self.limits = limits
     self.database = "database:%s" % scope
     self.indexbase = "indexbase:%s" % scope
-    mmseg.Dictionary.load_dictionaries ()
 
   def _get_index_key (self, key):
     return "%s:%s" % (self.indexbase, key)
@@ -80,11 +67,10 @@ class Autocomplete (object):
 
     # Prefixs for term
     prefixs=[]
-    tokens=mmseg.Algorithm(term)
+    tokens = jieba.cut(term)
     for token in tokens:
-      word = token.text
-      for i in xrange (1,len(word)+1):
-        prefixs.append(word[:i])
+      for i in xrange (1,len(token)+1):
+        prefixs.append(token[:i])
 
     return prefixs
 
@@ -92,8 +78,7 @@ class Autocomplete (object):
     """
     Normalize the search string.
     """
-    tokens = mmseg.Algorithm(prefix.lower())
-    return [token.text for token in tokens]
+    return [token for token in jieba.cut(prefix.lower())]
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)

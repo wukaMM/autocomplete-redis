@@ -17,17 +17,21 @@ class testAutocomplete (unittest.TestCase):
 
   def test_search_query2 (self):
     results=self.a.search_query (u'轻轻')
+    print "test_search_query2",results
     self.assertEqual(len(results),2)
     self.assertEqual(results[0]['uid'],'2')
     self.assertEqual(results[1]['uid'],'1')
 
   def test_search_query3 (self):
     results=self.a.search_query (u'你 带走')
+    print "test_search_query3",results
     self.assertEqual(len(results),1)
+
     self.assertEqual(results[0]['uid'],'3')
 
   def test_search_query4 (self):
     results=self.a.search_query (u'你挥一挥衣袖，不带走一片云彩')
+    print "test_search_query4",results
     self.assertEqual(len(results),1)
     self.assertEqual(results[0]['uid'],'3')
 
