@@ -1,7 +1,8 @@
 #-*- coding:utf-8 -*-
 import redis
 import simplejson
-import jieba
+#import jieba
+import re
 
 class Autocomplete (object):
   """
@@ -67,7 +68,8 @@ class Autocomplete (object):
 
     # Prefixs for term
     prefixs=[]
-    tokens = jieba.cut(term)
+	#tokens = jieba.cut(term)
+    tokens = re.split(r'\s+', term)
     for token in tokens:
       for i in xrange (1,len(token)+1):
         prefixs.append(token[:i])
@@ -78,7 +80,8 @@ class Autocomplete (object):
     """
     Normalize the search string.
     """
-    return [token for token in jieba.cut(prefix.lower())]
+	#return [token for token in jieba.cut(prefix.lower())]
+    return [token for token in re.split(r'\s+', prefix.lower())]
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)
